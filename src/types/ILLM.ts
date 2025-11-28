@@ -1,26 +1,62 @@
-// arquivo: src/types/ILLM.ts
-// Interface base para o retorno de Petições e Consultas (estilo Gemini)
+// src/types/ILLM.ts
+
 export interface IEthicsDisclaimer {
   disclaimer: string;
+  generated_at: string;
   requires_lawyer_review: boolean;
-  responsibility_notice: string;
+  ai_tool_version?: string;
+  responsibility_notice?: string; // ← Agora opcional (realidade do backend)
 }
+
+export type StructuredData = {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | null
+    | Date
+    | string[]
+    | StructuredData
+    | StructuredData[];
+};
 
 export interface ILLMResponse {
   tipo: string;
-  area: string;
-  texto_peticao?: string; // para Petições
-  resposta?: string; // para Consultas
-  resultado?: string; // para Análise de Texto
+  area: AreaJuridica;
+  texto_peticao?: string;
+  resposta?: string;
+  consulta?: string;
+  parecer?: string;
+  analise?: string;
+  resultado?: string;
+  dados_utilizados?: StructuredData;
   ethics: IEthicsDisclaimer;
-  status: string;
+  status: 'success' | 'error' | 'warning';
 }
 
+export type AreaJuridica =
+  | 'previdenciario'
+  | 'trabalhista'
+  | 'consumidor'
+  | 'civil'
+  | 'processual-civil'
+  | 'geral';
+
 export interface IConsultaInput {
-  pergunta: string;
-  area: "geral" | "previdenciario" | "trabalhista";
-  firm_name: string;
-  lawyer_name: string;
-  signature_text: string;
-  ai_persona: string;
+  texto: string;
+  area?: AreaJuridica;
+  contexto_adicional?: string;
+}
+
+export interface IConsultaJuridicaInput extends IConsultaInput {
+  firm_name?: string;
+  lawyer_name?: string;
+  signature_text?: string;
+  ai_persona?: string;
+}
+
+export interface IPeticaoPayload {
+  area: AreaJuridica;
+  tipo_peticao: string;
+  [key: string]: string | number | boolean | null | string[] | StructuredData | undefined;
 }

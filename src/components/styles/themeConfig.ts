@@ -1,28 +1,22 @@
-// arquivo: src/components/styles/themeConfig.ts
+// src/components/styles/themeConfig.ts
 import type { DefaultTheme } from 'styled-components';
 
-export const theme: DefaultTheme = {
+export const lightTheme: DefaultTheme = {
   colors: {
-    primary: '#0056b3',
-    secondary: '#007bff',
-    background: '#f8f8f8',
-    cardBackground: '#ffffff',
-    textPrimary: '#333333',
-    textSecondary: '#6c757d',
-    success: '#28a745',
-    danger: '#dc3545',
+    primary: '#1D4ED8',
+    background: '#F8FAFC',
+    cardBackground: '#FFFFFF',
+    textPrimary: '#0F172A',
+    textSecondary: '#475569',
   },
-  typography: {
-    fontFamily: 'Arial, sans-serif',
-    h1: '2.5rem',
-    h2: '2rem',
-    h3: '1.75rem',
-    body: '1rem',
-  },
-  spacing: {
-    small: '8px',
-    medium: '16px',
-    large: '24px',
-    extraLarge: '40px',
+};
+
+export const darkTheme: DefaultTheme = {
+  colors: {
+    primary: '#60A5FA',
+    background: '#0F172A',
+    cardBackground: '#1E293B',
+    textPrimary: '#F1F5F9',
+    textSecondary: '#94A3B8',
   },
 };
