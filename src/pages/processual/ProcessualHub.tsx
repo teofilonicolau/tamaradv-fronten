@@ -1,4 +1,4 @@
-// src/pages/direito/processual/ProcessualHub.tsx
+// src/pages/ProcessualHub.tsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { ArrowLeft, Gavel } from 'lucide-react'; // ← removido FileText (não usado)

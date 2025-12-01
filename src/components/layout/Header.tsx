@@ -43,7 +43,7 @@ export const Header = () => {
   return (
     <HeaderContainer>
       <Nav>
-        <Logo>TamarAI</Logo>
+        <Logo>TamarAdv</Logo>
         <RightGroup>
           <button
             onClick={toggleTheme}

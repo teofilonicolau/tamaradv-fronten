@@ -6,13 +6,13 @@ import { LayoutWrapper } from './components/layout/LayoutWrapper';
 
 // Hubs principais
 import { Home } from './pages/hubs/Home';
-import { PrevidenciarioHub } from './pages/direito/previdenciario/PrevidenciarioHub';
-import { TrabalhistaHub } from './pages/direito/trabalhista/TrabalhistaHub';
-import { CalculadorasHub } from './pages/direito/calculadoras/CalculadorasHub';
-import { ProcessualHub } from './pages/direito/processual/ProcessualHub';
+import { PrevidenciarioHub } from './pages/previdenciario/PrevidenciarioHub';
+import { TrabalhistaHub } from './pages/trabalhista/TrabalhistaHub';
+import { CalculadorasHub } from './pages/calculadoras/CalculadorasHub';
+import { ProcessualHub } from './pages/processual/ProcessualHub';
 
 // Páginas individuais
-import { HorasExtrasPage } from './pages/calculadoras/HorasExtrasPage';
+import { HorasExtrasPage } from './pages/calculadoras/calculators/HorasExtrasPage';
 import ConsultaPage from './pages/forms/ConsultaPage';
 
 function App() {

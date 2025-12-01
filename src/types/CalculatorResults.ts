@@ -1,12 +1,17 @@
 // src/types/CalculatorResults.ts
-// Tipos de resposta detalhados de cada calculadora
-// Use esses tipos no CalculatorService para ter 100% de segurança
+// Tipos CORRETOS baseados no seu backend real (Swagger + testes)
+
+export type HorasExtrasResult = {
+  horas_extras_diarias: number;
+  valor_total: number;
+  observacao: string;
+};
 
 export type TempoEspecialResult = {
   tempo_total_dias: number;
   tempo_total_anos_meses_dias: string;
-  tempo_convertido_homens?: number; // dias convertidos com fator 1.4
-  tempo_convertido_mulheres?: number; // dias convertidos com fator 1.2
+  tempo_convertido_homens?: number;
+  tempo_convertido_mulheres?: number;
   tem_direito_aposentadoria_especial: boolean;
   observacao?: string;
 };
@@ -22,16 +27,8 @@ export type RevisaoVidaTodaResult = {
   mensagem?: string;
 };
 
-export type HorasExtrasResult = {
-  horas_devidas_50: number;
-  horas_devidas_100: number;
-  valor_total_50: number;
-  valor_total_100: number;
-  valor_total_geral: number;
-  reflexos_fgts?: number;
-  reflexos_inss?: number;
-  observacao?: string;
-};
+// Os outros você pode manter por enquanto (se ainda não usou)
+// Ou ir corrigindo conforme for implementando
 
 export type CorrecaoMonetariaResult = {
   valor_original: number;
@@ -109,5 +106,4 @@ export type RegraTransicaoEC103Result = {
   melhor_regra?: '50%' | '100%' | 'nenhuma';
 };
 
-// Tipo genérico de fallback (só use se ainda não tipou tudo)
 export type GenericCalcResult = Record<string, string | number | boolean | null | undefined>;

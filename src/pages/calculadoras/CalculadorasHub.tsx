@@ -1,6 +1,6 @@
-// src/pages/hubs/CalculadorasHub.tsx
+// src/pages/CalculadorasHub.tsx
 import React from 'react';
-import { NavCard } from '../../../components/ui/NavCard'; // ← CORRIGIDO: 4 níveis acima
+import { NavCard } from '../../components/ui/NavCard'; 
 import {
   Calculator,
   Clock,

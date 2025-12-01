@@ -1,4 +1,4 @@
-// src/pages/direito/previdenciario/PrevidenciarioHub.tsx
+// src/pages/previdenciario/PrevidenciarioHub.tsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FileText, Calculator, ArrowLeft, Scale } from 'lucide-react';
@@ -32,10 +32,12 @@ const PeticaoCard: React.FC<{
           <FileText size={40} className="text-white" />
         )}
       </div>
+
       <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
         {title}
       </h3>
       <p className="text-gray-600 dark:text-gray-300 text-lg">{subtitle}</p>
+
       <span className="inline-block mt-6 text-blue-600 dark:text-blue-400 font-semibold group-hover:text-blue-800">
         {isCalculator ? 'Calcular →' : 'Gerar Petição →'}
       </span>

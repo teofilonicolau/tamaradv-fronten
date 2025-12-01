@@ -1,7 +1,7 @@
-// src/pages/direito/trabalhista/TrabalhistaHub.tsx
+// src/pages/TrabalhistaHub.tsx
 import React from 'react';
 import styled from 'styled-components';
-import { NavCard } from '../../../components/ui/NavCard';
+import { NavCard } from '../../components/ui/NavCard';
 
 const Container = styled.div`
   min-height: 100vh;

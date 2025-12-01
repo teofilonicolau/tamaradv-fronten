@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavCard } from '../../components/ui/NavCard';
+import { NavCard } from '../../components/ui/NavCard'; // 
 
 const Grid = styled.div`
   display: grid;

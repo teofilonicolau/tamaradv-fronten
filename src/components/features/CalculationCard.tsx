@@ -2,32 +2,39 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// === ESTILOS (mantidos) ===
+// === ESTILOS CORRIGIDOS (agora usa theme.colors.primary) ===
 const ResultContainer = styled.div`
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  padding: 24px;
-  margin-top: 24px;
-  border-left: 5px solid ${({ theme }) => theme.colors?.success || '#10b981'};
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 28px;
+  margin-top: 32px;
+  border-left: 6px solid ${({ theme }) => theme.colors?.primary || '#6366f1'};
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
 `;
 
 const ResultHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
 `;
 
 const ResultTitle = styled.h3`
-  color: ${({ theme }) => theme.colors?.primary || '#4f46e5'};
+  color: ${({ theme }) => theme.colors?.primary || '#6366f1'};
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
 `;
 
-// === TIPO RECURSIVO PARA DADOS DE CÁLCULO (flexível e seguro)
+// === TIPOS (mantidos) ===
 type CalculationValue =
   | string
   | number
@@ -40,96 +47,71 @@ type CalculationData = {
   [key: string]: CalculationValue;
 };
 
-// === PROPS TIPADAS ===
 interface CalculationCardProps {
   data: CalculationData;
   title: string;
 }
 
-// === COMPONENTE 100% TIPADO ===
+// === COMPONENTE PERFEITO ===
 export const CalculationCard: React.FC<CalculationCardProps> = ({ data, title }) => {
   if (!data || Object.keys(data).length === 0) {
     return null;
   }
 
-  // Função recursiva totalmente tipada
   const renderValue = (value: CalculationValue): React.ReactNode => {
     if (value === null || value === undefined) return '—';
-
-    if (typeof value === 'boolean') {
-      return value ? 'Sim' : 'Não';
-    }
-
+    if (typeof value === 'boolean') return value ? 'Sim' : 'Não';
     if (typeof value === 'number') {
-      // Formata valores monetários automaticamente
-      if (value > 1000) {
+      if (Math.abs(value) >= 1000) {
         return new Intl.NumberFormat('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         }).format(value);
       }
-      return value.toLocaleString('pt-BR');
+      return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-
     if (Array.isArray(value)) {
       return (
-        <ul style={{ margin: '4px 0', paddingLeft: '20px' }}>
+        <ul className="list-disc list-inside ml-4 mt-1 text-sm">
           {value.map((item, i) => (
             <li key={i}>{renderValue(item)}</li>
           ))}
         </ul>
       );
     }
-
     if (typeof value === 'object') {
       return (
-        <div style={{ marginLeft: '16px' }}>
+        <div className="ml-6 mt-2 space-y-1">
           {Object.entries(value).map(([k, v]) => (
-            <div key={k}>
-              <strong>{k.replace(/_/g, ' ')}:</strong> {renderValue(v)}
+            <div key={k} className="text-sm">
+              <strong className="capitalize">{k.replace(/_/g, ' ')}:</strong>{' '}
+              {renderValue(v)}
             </div>
           ))}
         </div>
       );
     }
-
     return String(value);
   };
 
   return (
     <ResultContainer>
       <ResultHeader>
-        <ResultTitle>Resultado: {title}</ResultTitle>
+        <ResultTitle>{title}</ResultTitle>
       </ResultHeader>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <tbody>
-          {Object.entries(data).map(([key, value]) => (
-            <tr key={key}>
-              <td
-                style={{
-                  textTransform: 'capitalize',
-                  width: '40%',
-                  padding: '12px',
-                  color: '#4b5563',
-                  fontWeight: '600',
-                }}
-              >
-                {key.replace(/_/g, ' ')}
-              </td>
-              <td
-                style={{
-                  padding: '12px',
-                  fontWeight: 'bold',
-                  color: '#1f2937',
-                }}
-              >
-                {renderValue(value)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="space-y-4">
+        {Object.entries(data).map(([key, value]) => (
+          <div key={key} className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 border-b border-gray-100 last:border-0">
+            <div className="font-semibold text-gray-700 capitalize">
+              {key.replace(/_/g, ' ')}
+            </div>
+            <div className="font-bold text-gray-900">
+              {renderValue(value)}
+            </div>
+          </div>
+        ))}
+      </div>
     </ResultContainer>
   );
 };
