@@ -81,7 +81,7 @@ export const Home = () => {
       <Title>TamarAdv</Title>
       <Subtitle>Petições, cálculos e consultas jurídicas com inteligência artificial</Subtitle>
       <Grid>
-        <Card to="/direito">
+        <Card to="/previdenciario">
           <Icon><FileText size={90} /></Icon>
           <h2>Petições Jurídicas</h2>
           <p>Acesse agora →</p>
