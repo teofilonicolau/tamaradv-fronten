@@ -1,4 +1,4 @@
-// src/App.tsx — VERSÃO PERFEITA 2025 — ZERO ERROS, ZERO WARNINGS
+// src/App.tsx — VERSÃO ATUALIZADA 2025 (com ConsultasHub adicionado)
 import { Routes, Route } from 'react-router-dom';
 import { LayoutWrapper } from './components/layout/LayoutWrapper';
 
@@ -9,7 +9,10 @@ import { TrabalhistaHub } from './pages/trabalhista/TrabalhistaHub';
 import { CalculadorasHub } from './pages/calculadoras/CalculadorasHub';
 import { ProcessualHub } from './pages/processual/ProcessualHub';
 
-// Consultas IA — default exports
+// ← LINHA ADICIONADA (a única importação que faltava)
+import { ConsultasHub } from './pages/consultas/ConsultasHub';
+
+// Consultas IA — default exports (páginas individuais)
 import ConsultaPage from './pages/consultas/ConsultaPage';
 import AnaliseTextoPage from './pages/consultas/AnaliseTextoPage';
 import ParecerJuridicoPage from './pages/consultas/ParecerJuridicoPage';
@@ -17,24 +20,29 @@ import ParecerJuridicoPage from './pages/consultas/ParecerJuridicoPage';
 // Calculadoras
 import { HorasExtrasPage } from './pages/calculadoras/calculators/HorasExtrasPage';
 
-// REMOVA ESTA LINHA: import React from 'react';  ← NÃO PRECISA MAIS
-
 function App() {
   return (
     <LayoutWrapper>
       <Routes>
+        {/* Páginas principais */}
         <Route path="/" element={<Home />} />
         <Route path="/previdenciario" element={<PrevidenciarioHub />} />
         <Route path="/trabalhista" element={<TrabalhistaHub />} />
         <Route path="/calculadoras" element={<CalculadorasHub />} />
         <Route path="/processual" element={<ProcessualHub />} />
 
+        {/* ← ROTA ADICIONADA */}
+        <Route path="/consultas/ia" element={<ConsultasHub />} />
+
+        {/* Páginas individuais das consultas */}
         <Route path="/consulta" element={<ConsultaPage />} />
         <Route path="/analise-texto" element={<AnaliseTextoPage />} />
         <Route path="/parecer-juridico" element={<ParecerJuridicoPage />} />
 
+        {/* Calculadoras */}
         <Route path="/calculadoras/horas-extras" element={<HorasExtrasPage />} />
 
+        {/* 404 */}
         <Route
           path="*"
           element={

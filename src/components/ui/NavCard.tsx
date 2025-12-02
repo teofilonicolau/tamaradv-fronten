@@ -49,12 +49,13 @@ export const NavCard: React.FC<NavCardProps> = ({
         {description}
       </p>
 
+      {/* ← LINHA SUBSTITUÍDA COM UNDERLINE ANIMADO */}
       <span
-        className={`mt-6 inline-block text-lg font-semibold transition-transform group-hover:translate-x-2 ${
+        className={`mt-6 inline-block text-lg font-semibold transition-all duration-300 group-hover:translate-x-2 group-hover:underline underline-offset-4 ${
           highlight ? 'text-white' : 'text-blue-600 dark:text-blue-400'
         }`}
       >
-        {highlight ? 'Acessar agora' : 'Calcular'} →
+        {highlight ? 'Acessar agora' : 'Acessar'} →
       </span>
     </NavLink>
   );
