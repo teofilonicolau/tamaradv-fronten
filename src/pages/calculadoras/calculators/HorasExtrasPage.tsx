@@ -3,8 +3,8 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { CalculatorService } from '../../../services/CalculatorService';
-import { CalculationCard } from '../../../components/common/CalculationCard';
-import { LLMResponseArea } from '../../../components/common/LLMResponseArea';
+import { CalculationCard } from '../../../components/ui/CalculationCard';
+import { LLMResponseArea } from '../../../components/ui/LLMResponseArea';
 
 interface HorasExtrasRequest {
   jornada_contratual: number;

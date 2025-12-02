@@ -1,83 +1,96 @@
+// src/pages/forms/GenericFormPage.tsx
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { PrevidenciarioService } from '../../services/PrevidenciarioService';
-import { GeneralService } from '../../services/GeneralService';
-import { LLMResponseArea } from '../../components/features/LLMResponseArea';
-import { ILLMResponse } from '../../types/ILLM';
+import { PrevidenciarioService } from '@/services/PrevidenciarioService';
+import { LLMResponseArea } from '@/components/ui/LLMResponseArea';
+import type { IPrevidenciarioResponse, PrevidenciarioInput } from '@/types/IPrevidenciario';
 
-const FormContainer = styled.div`
+const Container = styled.div`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  padding: 4rem 1rem;
+`;
+
+const FormWrapper = styled.div`
+  max-width: 1100px;
+  margin: 0 auto;
   background: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: 2rem;
+  padding: 4rem;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.15);
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Label = styled.label`
-  font-weight: 600;
-  margin-bottom: 5px;
-  text-transform: capitalize;
+const Title = styled.h1`
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(to right, #6366f1, #a855f7, #ec4899);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 3rem;
 `;
 
 const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-`;
-
-const TextArea = styled.textarea`
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-height: 100px;
-  font-family: inherit;
-`;
-
-const SubmitButton = styled.button`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 20px;
   width: 100%;
-
-  &:disabled {
-    background-color: #ccc;
+  padding: 1.2rem;
+  border: 2px solid #e0e7ff;
+  border-radius: 1rem;
+  font-size: 1.1rem;
+  &:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.2);
   }
 `;
 
-interface GenericFormProps {
-  area: 'previdenciario' | 'trabalhista' | 'consumidor' | 'civil' | 'processual';
-}
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 1.3rem;
+  border: 2px solid #e0e7ff;
+  border-radius: 1rem;
+  font-size: 1.1rem;
+  min-height: 240px;
+  resize: vertical;
+  font-family: inherit;
+  &:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.2);
+  }
+`;
 
-const GenericFormPage: React.FC<GenericFormProps> = ({ area }) => {
+const Button = styled.button`
+  width: 100%;
+  padding: 2rem;
+  background: linear-gradient(to right, #6366f1, #8b5cf6, #ec4899);
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  margin-top: 3rem;
+  transition: all 0.4s;
+  &:hover:not(:disabled) {
+    transform: translateY(-10px);
+    box-shadow: 0 40px 80px rgba(139, 92, 246, 0.7);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+export default function GenericFormPage() {
   const { tipo } = useParams<{ tipo: string }>();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<ILLMResponse | null>(null);
-  
-  // Estado inicial genérico (pode ser refinado com schemas específicos)
-  const [formData, setFormData] = useState<any>({});
-
-  // Lista de campos essenciais (simplificado para demonstração dinâmica)
-  // Em produção, você pode ter schemas específicos para cada tipo
-  const commonFields = [
-    'nome', 'cpf', 'rg', 'endereco_completo', 'telefone', 
-    'parte_contraria', 'cpf_cnpj_parte_contraria', 'descricao_caso', 'valor_causa'
-  ];
+  const [response, setResponse] = useState<IPrevidenciarioResponse | null>(null);
+  const [formData, setFormData] = useState<PrevidenciarioInput>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,81 +99,131 @@ const GenericFormPage: React.FC<GenericFormProps> = ({ area }) => {
     setResponse(null);
 
     try {
-      let result;
-      
-      // Roteamento Dinâmico para o Serviço Correto
-      if (area === 'previdenciario') {
-         // Mapeamento manual para métodos do PrevidenciarioService
-         if (tipo === 'peticao-aposentadoria-especial') result = await PrevidenciarioService.aposentadoriaEspecial(formData);
-         else if (tipo === 'peticao-auxilio-doenca') result = await PrevidenciarioService.auxilioDoenca(formData);
-         else if (tipo === 'peticao-bpc-loas') result = await PrevidenciarioService.bpcLoas(formData);
-         // ... adicione outros cases conforme necessário ou use any para método dinâmico
-         else result = await PrevidenciarioService.aposentadoriaTempoContribuicao(formData); // fallback
-      } 
-      else if (area === 'trabalhista') {
-        if (tipo === 'peticao-vinculo') result = await GeneralService.trabalhista.vinculo(formData);
-        else result = await GeneralService.trabalhista.quesitos(formData);
-      }
-      else if (area === 'consumidor') {
-        if (tipo === 'peticao-cobranca-indevida') result = await GeneralService.consumidor.cobrancaIndevida(formData);
-        else result = await GeneralService.consumidor.vicioProduto(formData);
-      }
-      else if (area === 'civil') {
-        if (tipo === 'peticao-cobranca') result = await GeneralService.civil.cobranca(formData);
-        else result = await GeneralService.civil.indenizacao(formData);
-      }
-      else if (area === 'processual') {
-        if (tipo === 'peticao-execucao') result = await GeneralService.processual.execucao(formData);
-        else result = await GeneralService.processual.monitoria(formData);
+      let result: IPrevidenciarioResponse;
+
+      switch (tipo) {
+        case 'aposentadoria-especial':
+          result = (await PrevidenciarioService.aposEspecial(formData)).data;
+          break;
+        case 'aposentadoria-invalidez':
+          result = (await PrevidenciarioService.aposInvalidez(formData)).data;
+          break;
+        case 'aposentadoria-rural':
+          result = (await PrevidenciarioService.aposRural(formData)).data;
+          break;
+        case 'aposentadoria-tempo-contribuicao':
+          result = (await PrevidenciarioService.aposTempoContribuicao(formData)).data;
+          break;
+        case 'auxilio-doenca':
+          result = (await PrevidenciarioService.auxilioDoenca(formData)).data;
+          break;
+        case 'salario-maternidade':
+          result = (await PrevidenciarioService.salarioMaternidade(formData)).data;
+          break;
+        case 'pensao-morte':
+          result = (await PrevidenciarioService.pensaoMorte(formData)).data;
+          break;
+        case 'bpc-loas':
+          result = (await PrevidenciarioService.bpcLoas(formData)).data;
+          break;
+        case 'revisao-vida-toda':
+          result = (await PrevidenciarioService.revisaoVidaToda(formData)).data;
+          break;
+        case 'revisao-beneficio':
+          result = (await PrevidenciarioService.revisaoBeneficio(formData)).data;
+          break;
+        default:
+          alert('Petição não implementada ainda');
+          setLoading(false);
+          return;
       }
 
-      setResponse(result?.data || result); // Ajuste dependendo se o axios retorna data direto
-    } catch (error) {
-      alert('Erro ao gerar petição. Verifique os dados.');
-      console.error(error);
+      setResponse(result);
+    } catch (error: unknown) {
+      console.error('Erro na geração da petição:', error);
+
+      let errorMessage = 'Erro ao conectar com o servidor';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      if (typeof error === 'object' && error !== null) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const err = error as any;
+        const detail = err.response?.data?.detail || err.response?.data?.message;
+        if (detail) {
+          errorMessage = Array.isArray(detail) ? detail[0].msg || detail[0] : detail;
+        }
+      }
+
+      alert(`Erro: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
   };
 
+  const formatTitle = (slug: string) => {
+    return slug
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, l => l.toUpperCase())
+      .replace('Contribuicao', 'Contribuição')
+      .replace('Loas', 'LOAS')
+      .replace('Bpc', 'BPC');
+  };
+
   return (
-    <div>
-      <h2>Nova Petição: {tipo?.replace(/-/g, ' ').toUpperCase()}</h2>
-      
-      <FormContainer>
+    <Container>
+      <FormWrapper>
+        <Title>{formatTitle(tipo || 'Petição')}</Title>
+
         <form onSubmit={handleSubmit}>
-          {/* Renderização Dinâmica de Campos Comuns */}
-          {commonFields.map((field) => (
-            <FormGroup key={field}>
-              <Label>{field.replace(/_/g, ' ')}</Label>
-              {field.includes('descricao') ? (
-                <TextArea name={field} onChange={handleChange} required />
-              ) : (
-                <Input type={field.includes('valor') ? 'number' : 'text'} name={field} onChange={handleChange} />
-              )}
-            </FormGroup>
-          ))}
+          <div className="grid md:grid-cols-2 gap-8 mb-10">
+            <div>
+              <label className="block text-lg font-bold mb-2">Nome Completo</label>
+              <Input name="nome_cliente" onChange={handleChange} required />
+            </div>
+            <div>
+              <label className="block text-lg font-bold mb-2">CPF</label>
+              <Input name="cpf_cliente" onChange={handleChange} required maxLength={11} />
+            </div>
+            <div>
+              <label className="block text-lg font-bold mb-2">Data de Nascimento</label>
+              <Input name="data_nascimento" type="date" onChange={handleChange} required />
+            </div>
+            <div>
+              <label className="block text-lg font-bold mb-2">Número do Benefício (se houver)</label>
+              <Input name="numero_beneficio" onChange={handleChange} />
+            </div>
+          </div>
 
-          {/* Campo Extra Genérico para inputs que não estão na lista comum */}
-          <p style={{marginTop: 20, fontStyle: 'italic', fontSize: '0.9rem'}}>
-            * Preencha os campos acima. A IA utilizará os dados para estruturar a petição.
-          </p>
+          <div className="mb-12">
+            <label className="block text-xl font-bold mb-4">
+              Descreva o caso com TODOS os detalhes possíveis
+            </label>
+            <TextArea
+              name="descricao_caso"
+              onChange={handleChange}
+              placeholder="Doenças, períodos trabalhados, agentes nocivos, salários antigos, documentos anexados, tudo que puder ajudar..."
+              required
+            />
+          </div>
 
-          <SubmitButton type="submit" disabled={loading}>
-            {loading ? 'Gerando Petição com IA...' : 'Gerar Petição'}
-          </SubmitButton>
+          <Button type="submit" disabled={loading}>
+            {loading ? 'GERANDO PETIÇÃO COM IA...' : 'GERAR PETIÇÃO JURÍDICA AGORA'}
+          </Button>
         </form>
-      </FormContainer>
 
-      {response && (
-        <LLMResponseArea 
-          title={`Resultado: ${tipo}`}
-          generatedText={response.texto_peticao || response.resposta || "Sem texto gerado."}
-          disclaimer={response.ethics}
-        />
-      )}
-    </div>
+        {response && (
+          <div className="mt-16">
+            <LLMResponseArea
+              title="PETIÇÃO PRONTA PARA PROTOCOLO"
+              content={response.peticao_completa}
+              disclaimer={response.ethics.disclaimer}
+            />
+          </div>
+        )}
+      </FormWrapper>
+    </Container>
   );
-};
-
-export default GenericFormPage;
+}

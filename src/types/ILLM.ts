@@ -1,62 +1,81 @@
-// src/types/ILLM.ts
-
-export interface IEthicsDisclaimer {
-  disclaimer: string;
-  generated_at: string;
-  requires_lawyer_review: boolean;
-  ai_tool_version?: string;
-  responsibility_notice?: string; // ← Agora opcional (realidade do backend)
-}
-
-export type StructuredData = {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | null
-    | Date
-    | string[]
-    | StructuredData
-    | StructuredData[];
-};
-
-export interface ILLMResponse {
-  tipo: string;
-  area: AreaJuridica;
-  texto_peticao?: string;
-  resposta?: string;
-  consulta?: string;
-  parecer?: string;
-  analise?: string;
-  resultado?: string;
-  dados_utilizados?: StructuredData;
-  ethics: IEthicsDisclaimer;
-  status: 'success' | 'error' | 'warning';
-}
-
+// src/types/ILLM.ts ← VERSÃO OFICIAL 2025 — TIPO-SEGURA, ESCALÁVEL E PERFEITA
 export type AreaJuridica =
+  | 'geral'
   | 'previdenciario'
   | 'trabalhista'
-  | 'consumidor'
   | 'civil'
-  | 'processual-civil'
-  | 'geral';
+  | 'consumidor'
+  | 'processual-civil';
 
-export interface IConsultaInput {
-  texto: string;
-  area?: AreaJuridica;
-  contexto_adicional?: string;
+// Interface principal da resposta da IA — 100% type-safe, sem any
+export interface ILLMResponse {
+  // Campos comuns a várias rotas
+  resposta?: string;
+  pergunta?: string;
+  area_consultada?: string;
+
+  resultado?: string;
+  texto_original?: string;
+  tipo_analise?: string;
+  palavras?: number;
+  caracteres?: number;
+
+  relatorio?: string;
+  parecer?: string;
+  titulo?: string;
+  incluiu_jurisprudencia?: boolean;
+
+  // Metadados do sistema
+  escritorio?: string;
+  modelo: string;
+  tokens_usados: number;
+  status: 'success' | 'error' | 'warning';
+
+  // Permite campos extras do backend sem usar "any"
+  // unknown é o mais seguro: força type guard quando for usar
+  [key: string]: unknown;
 }
 
-export interface IConsultaJuridicaInput extends IConsultaInput {
+// ====================== INPUTS EXATOS DO BACKEND ======================
+
+export interface IConsultaInput {
+  pergunta: string;
+  area?: AreaJuridica;
   firm_name?: string;
   lawyer_name?: string;
   signature_text?: string;
   ai_persona?: string;
 }
 
-export interface IPeticaoPayload {
-  area: AreaJuridica;
-  tipo_peticao: string;
-  [key: string]: string | number | boolean | null | string[] | StructuredData | undefined;
+export interface IAnaliseInput {
+  texto: string;
+  tipo_analise?: 'resumo' | 'extrair_informacoes' | 'risco' | 'contrato';
+  firm_name?: string;
+  lawyer_name?: string;
+  signature_text?: string;
+  ai_persona?: string;
 }
+
+export interface IParecerInput {
+  titulo: string;
+  conteudo: string;
+  area?: AreaJuridica;
+  incluir_jurisprudencia?: boolean;
+  firm_name?: string;
+  lawyer_name?: string;
+  signature_text?: string;
+  ai_persona?: string;
+}
+
+// ====================== TIPOS AUXILIARES (OPCIONAIS) ======================
+
+// Se quiser ainda mais segurança ao acessar campos dinâmicos:
+export type LLMResponseField = keyof ILLMResponse;
+
+// Para extrair apenas os campos de texto (útil no LLMResponseArea)
+export type LLMTextContent = 
+  | ILLMResponse['resposta']
+  | ILLMResponse['resultado']
+  | ILLMResponse['relatorio']
+  | ILLMResponse['parecer']
+  | string;

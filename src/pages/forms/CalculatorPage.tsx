@@ -3,7 +3,15 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { CalculatorService } from '../../services/CalculatorService';
-import { CalculationCard } from '../../components/features/CalculationCard';
+import { CalculationCard } from '../../components/ui/CalculationCard';
+import type {
+  ICorrecaoMonetariaInput,
+  IJurosMoraInput,
+  ITempoEspecialInput,
+  IRevisaoVidaTodaInput,
+  IHorasExtrasInput,
+} from '../../types/ICalculator';
+import type { GenericCalcResult } from '../../types/CalculatorResults';
 
 // ====================== ESTILOS ======================
 const PageContainer = styled.div`
@@ -13,12 +21,12 @@ const PageContainer = styled.div`
 `;
 
 const Content = styled.div`
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
 `;
 
 const Title = styled.h1`
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 900;
   text-align: center;
   background: linear-gradient(to right, #6366f1, #8b5cf6);
@@ -28,35 +36,16 @@ const Title = styled.h1`
   margin-bottom: 1rem;
 `;
 
-const Subtitle = styled.p`
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: 1.2rem;
-  margin-bottom: 3rem;
-`;
-
 const FormContainer = styled.div`
   background: ${({ theme }) => theme.colors.cardBackground};
-  padding: 2.5rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid ${({ theme }) => theme.colors.primary}20;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
-`;
-
-const Label = styled.label`
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  padding: 3rem;
+  border-radius: 2rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 1rem;
+  padding: 1.1rem;
   border: 2px solid ${({ theme }) => theme.colors.primary}30;
   border-radius: 1rem;
   font-size: 1.1rem;
@@ -66,25 +55,26 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.primary}20;
+    box-shadow: 0 0 0 5px ${({ theme }) => theme.colors.primary}20;
   }
 `;
 
 const Button = styled.button`
   width: 100%;
-  padding: 1.2rem;
+  padding: 1.4rem;
+  margin-top: 2rem;
   background: ${({ theme }) => theme.colors.primary};
   color: white;
   font-weight: bold;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   border: none;
   border-radius: 1rem;
   cursor: pointer;
-  margin-top: 1rem;
+  transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px ${({ theme }) => theme.colors.primary}40;
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px ${({ theme }) => theme.colors.primary}50;
   }
 
   &:disabled {
@@ -93,34 +83,15 @@ const Button = styled.button`
   }
 `;
 
-// ====================== TIPOS ======================
-// Dados comuns a quase todas as calculadoras
-interface BaseFormData {
-  valor?: string;
-  data_inicial?: string;
-  data_final?: string;
-  indice?: string;
-  // Você pode ir adicionando mais campos conforme precisar (taxa, periodo, etc)
-  [key: string]: string | undefined;
-}
-
-// Tipo genérico para resposta da API (ajuste conforme sua API real)
-interface CalculationResponse {
-  calculo?: Record<string, unknown>;
-  resultado?: string;
-  [key: string]: unknown;
-}
-
 // ====================== COMPONENTE ======================
 const CalculatorPage: React.FC = () => {
   const { tipo } = useParams<{ tipo: string }>();
-  const [formData, setFormData] = useState<BaseFormData>({});
-  const [result, setResult] = useState<CalculationResponse | null>(null);
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [result, setResult] = useState<GenericCalcResult | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleCalculate = async () => {
@@ -128,81 +99,102 @@ const CalculatorPage: React.FC = () => {
     setResult(null);
 
     try {
-      let response: { data: CalculationResponse };
-
       switch (tipo) {
-        case 'correcao-monetaria':
-          response = await CalculatorService.correcaoMonetaria(formData);
+        case 'correcao-monetaria': {
+          const { data } = await CalculatorService.correcaoMonetaria(
+            formData as unknown as ICorrecaoMonetariaInput
+          );
+          setResult(data.calculo);
           break;
-        case 'juros-mora':
-          response = await CalculatorService.jurosMora(formData);
+        }
+        case 'juros-mora': {
+          const { data } = await CalculatorService.jurosMora(
+            formData as unknown as IJurosMoraInput
+          );
+          setResult(data.calculo);
           break;
-        case 'tempo-especial':
-          response = await CalculatorService.tempoEspecial(formData);
+        }
+        case 'tempo-especial': {
+          const { data } = await CalculatorService.tempoEspecial(
+            formData as unknown as ITempoEspecialInput
+          );
+          setResult(data.calculo);
           break;
-        case 'revisao-vida-toda':
-          response = await CalculatorService.revisaoVidaToda(formData);
+        }
+        case 'revisao-vida-toda': {
+          const { data } = await CalculatorService.revisaoVidaToda(
+            formData as unknown as IRevisaoVidaTodaInput
+          );
+          setResult(data.calculo);
           break;
-        case 'horas-extras':
-          response = await CalculatorService.horasExtras(formData);
+        }
+        case 'horas-extras': {
+          const { data } = await CalculatorService.horasExtras(
+            formData as unknown as IHorasExtrasInput
+          );
+          setResult(data.calculo);
           break;
+        }
         default:
-          alert('Calculadora ainda não implementada');
+          alert('Calculadora em desenvolvimento');
           setLoading(false);
           return;
       }
-
-      // Normaliza a resposta para o CalculationCard
-      const normalizedResult = response.data.calculo ?? response.data ?? { resultado: 'Sucesso' };
-      setResult(normalizedResult);
     } catch (error) {
-      console.error(error);
-      alert('Erro ao calcular. Verifique os campos.');
+      console.error('Erro na calculadora:', error);
+      alert('Erro ao realizar cálculo. Verifique os dados.');
     } finally {
       setLoading(false);
     }
   };
 
   const title = tipo
-    ? tipo
-        .replace(/-/g, ' ')
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
+    ? tipo.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
     : 'Calculadora';
 
   return (
     <PageContainer>
       <Content>
         <Title>{title}</Title>
-        <Subtitle>Preencha os campos necessários para o cálculo</Subtitle>
 
         <FormContainer>
-          <FormGroup>
-            <Label>Valor Principal (R$)</Label>
-            <Input
-              name="valor"
-              type="number"
-              step="0.01"
-              onChange={handleChange}
-              placeholder="50000.00"
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Data Inicial</Label>
-            <Input name="data_inicial" type="date" onChange={handleChange} />
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Data Final / Vencimento</Label>
-            <Input name="data_final" type="date" onChange={handleChange} />
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Índice / Taxa (ex: INPC, SELIC)</Label>
-            <Input name="indice" type="text" onChange={handleChange} placeholder="INPC" />
-          </FormGroup>
+          <div className="grid gap-6">
+            <div>
+              <label className="block text-lg font-semibold mb-2 text-gray-700">
+                Valor Principal (R$)
+              </label>
+              <Input
+                name="valor"
+                type="number"
+                step="0.01"
+                onChange={handleChange}
+                placeholder="50.000,00"
+              />
+            </div>
+            <div>
+              <label className="block text-lg font-semibold mb-2 text-gray-700">
+                Data Inicial
+              </label>
+              <Input name="data_inicial" type="date" onChange={handleChange} />
+            </div>
+            <div>
+              <label className="block text-lg font-semibold mb-2 text-gray-700">
+                Data Final
+              </label>
+              <Input name="data_final" type="date" onChange={handleChange} />
+            </div>
+            <div>
+              <label className="block text-lg font-semibold mb-2 text-gray-700">
+                Índice / Taxa
+              </label>
+              <Input
+                name="indice"
+                type="text"
+                onChange={handleChange}
+                placeholder="INPC, SELIC..."
+              />
+            </div>
+          </div>
 
           <Button onClick={handleCalculate} disabled={loading}>
             {loading ? 'Calculando...' : 'Calcular Agora'}
