@@ -1,30 +1,19 @@
-// src/types/index.ts
-// BARREL CENTRAL — reexporta tudo de forma segura
-// Resolve conflitos de nomes e arquivos inexistentes
-
-// 1. Previdenciário (reexportação segura, sem conflito)
+// src/types/index.ts — VERSÃO FINAL 2025 (com Consumidor adicionado)
 export type {
-  IPeriodoEspecial,
-  IPrevidenciarioBaseInput,
-  IAposentadoriaEspecialInput,
-  IAposentadoriaInvalidezInput,
-  IAposentadoriaRuralInput,
-  IAposentadoriaTempoContribuicaoInput,
-  IAuxilioDoencaInput,
-  IBpcLoasInput,
-  IPensaoMorteInput,
-  ISalarioMaternidadeInput,
-  IRevisaoVidaTodaInput,
-  IRevisaoBeneficioInput,
-  IPeticaoComCalculoInput,
   IPrevidenciarioResponse,
+  PrevidenciarioInput,
 } from './IPrevidenciario';
 
-// 2. Calculadoras
+export type {
+  TrabalhistaInput,
+  ITrabalhistaResponse,
+} from './ITrabalhista';
+
+// Calculadoras (mantidas por enquanto)
 export type {
   ICalculatorResponse,
   ITempoEspecialInput,
-  IRevisaoVidaTodaInput as IRevisaoVidaTodaCalcInput, // evita conflito com previdenciário
+  IRevisaoVidaTodaInput as IRevisaoVidaTodaCalcInput,
   IHorasExtrasInput,
   ICorrecaoMonetariaInput,
   IVerbasRescisoriasInput,
@@ -53,24 +42,33 @@ export type {
   GenericCalcResult,
 } from './CalculatorResults';
 
-// 3. Processual Civil, Civil, Consumidor, Trabalhista
+// Consultas IA — SÓ O QUE É USADO DE VERDADE
 export type {
-  IProcessualBase,
-  IExecucaoTituloInput,
-  IMonitoriaInput,
-  IImpugnacaoCumprimentoInput,
-  ICivilCobrancaInput,
-  IConsumidorInput,
-  IVinculoEmpregaticioInput,
-} from './IProcessualCivil';
-
-// 4. Respostas LLM e Consulta
-export type {
-  IEthicsDisclaimer,
-  StructuredData,
-  ILLMResponse,
   AreaJuridica,
   IConsultaInput,
-  IConsultaJuridicaInput,
-  IPeticaoPayload,
+  IAnaliseInput,
+  IParecerInput,
 } from './ILLM';
+
+// CONSUMIDOR — ADICIONADO AQUI
+export type {
+  ConsumidorInput,
+  IConsumidorResponse,
+} from './IConsumidor';
+
+// Tipo genérico universal pra qualquer resposta com ethics (usado no LLMResponseArea)
+export interface IGenericResponse {
+  texto_peticao?: string;
+  quesitos?: string[];
+  peticao_completa?: string;
+  resposta?: string;
+  resultado?: string;
+  relatorio?: string;
+  parecer?: string;
+  ethics: {
+    disclaimer: string;
+    generated_at?: string;
+    requires_lawyer_review?: boolean;
+  };
+  [key: string]: unknown;
+}

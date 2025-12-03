@@ -1,4 +1,4 @@
-// src/App.tsx — VERSÃO FINAL 2025 (PREVIDENCIÁRIO COMPLETO + CONSULTAS + TUDO FUNCIONANDO)
+// src/App.tsx — VERSÃO ATUALIZADA 2025 (com Consumidor adicionado)
 import { Routes, Route } from 'react-router-dom';
 import { LayoutWrapper } from './components/layout/LayoutWrapper';
 
@@ -8,16 +8,24 @@ import { PrevidenciarioHub } from './pages/previdenciario/PrevidenciarioHub';
 import { TrabalhistaHub } from './pages/trabalhista/TrabalhistaHub';
 import { CalculadorasHub } from './pages/calculadoras/CalculadorasHub';
 import { ProcessualHub } from './pages/processual/ProcessualHub';
+
+// NOVO: Hub de Consultas IA
 import { ConsultasHub } from './pages/consultas/ConsultasHub';
 
-// Páginas individuais
+// Consultas IA — default exports
 import ConsultaPage from './pages/consultas/ConsultaPage';
 import AnaliseTextoPage from './pages/consultas/AnaliseTextoPage';
 import ParecerJuridicoPage from './pages/consultas/ParecerJuridicoPage';
+
+// Calculadoras
 import { HorasExtrasPage } from './pages/calculadoras/calculators/HorasExtrasPage';
 
-// ⇩⇩⇩ A PÁGINA QUE FAZ TODAS AS 10 PETIÇÕES PREVIDENCIÁRIAS FUNCIONAREM ⇩⇩⇩
-import GenericFormPage from './pages/forms/GenericFormPage';
+// Trabalhista
+import GenericTrabalhistaForm from './pages/forms/GenericTrabalhistaForm';
+
+// CONSUMIDOR — ADICIONADO AQUI
+import ConsumidorHub from './pages/consumidor/ConsumidorHub';
+import GenericConsumidorForm from './pages/forms/GenericConsumidorForm';
 
 function App() {
   return (
@@ -29,13 +37,11 @@ function App() {
         <Route path="/trabalhista" element={<TrabalhistaHub />} />
         <Route path="/calculadoras" element={<CalculadorasHub />} />
         <Route path="/processual" element={<ProcessualHub />} />
+
+        {/* HUB DE CONSULTAS IA */}
         <Route path="/consultas/ia" element={<ConsultasHub />} />
 
-        {/* ⇩⇩⇩ A LINHA QUE LIBERA TODAS AS 10 PETIÇÕES PREVIDENCIÁRIAS DE UMA VEZ ⇩⇩⇩ */}
-        <Route path="/previdenciario/peticao/:tipo" element={<GenericFormPage />} />
-        {/* ⇧⇧⇧ SÓ ESSA LINHA E O PREVIDENCIÁRIO INTEIRO FUNCIONA ⇧⇧⇧ */}
-
-        {/* Consultas IA */}
+        {/* Páginas individuais das consultas */}
         <Route path="/consulta" element={<ConsultaPage />} />
         <Route path="/analise-texto" element={<AnaliseTextoPage />} />
         <Route path="/parecer-juridico" element={<ParecerJuridicoPage />} />
@@ -43,7 +49,16 @@ function App() {
         {/* Calculadoras */}
         <Route path="/calculadoras/horas-extras" element={<HorasExtrasPage />} />
 
-        {/* 404 — sempre por último */}
+        {/* ROTAS TRABALHISTAS */}
+        <Route path="/trabalhista/peticao-vinculo" element={<GenericTrabalhistaForm />} />
+        <Route path="/trabalhista/quesitos-insalubridade" element={<GenericTrabalhistaForm />} />
+
+        {/* CONSUMIDOR — NOVAS ROTAS */}
+        <Route path="/consumidor" element={<ConsumidorHub />} />
+        <Route path="/consumidor/peticao-vicio-produto" element={<GenericConsumidorForm />} />
+        <Route path="/consumidor/peticao-cobranca-indevida" element={<GenericConsumidorForm />} />
+
+        {/* 404 - Sempre por último */}
         <Route
           path="*"
           element={
@@ -52,9 +67,7 @@ function App() {
                 <h1 className="text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
                   404
                 </h1>
-                <p className="text-4xl mt-8 text-gray-700 font-bold">
-                  Página não encontrada
-                </p>
+                <p className="text-4xl mt-8 text-gray-700 font-bold">Página não encontrada</p>
                 <a
                   href="/"
                   className="mt-12 inline-block px-16 py-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-110 transition-all duration-300"
