@@ -1,4 +1,4 @@
-// src/types/index.ts — VERSÃO FINAL 2025 (com Direito Civil adicionado)
+// src/types/index.ts — VERSÃO FINAL 2025 (com Processual Civil adicionado)
 export type {
   IPrevidenciarioResponse,
   PrevidenciarioInput,
@@ -56,11 +56,17 @@ export type {
   IConsumidorResponse,
 } from './IConsumidor';
 
-// CIVIL — ADICIONADO AQUI
+// CIVIL
 export type {
   CivilInput,
   ICivilResponse,
 } from './ICivil';
+
+// PROCESSUAL CIVIL — ADICIONADO AQUI (FINAL)
+export type {
+  ProcessualCivilInput,
+  IProcessualCivilResponse,
+} from './IProcessualCivil';
 
 // Tipo genérico universal pra qualquer resposta com ethics (usado no LLMResponseArea)
 export interface IGenericResponse {
