@@ -37,32 +37,45 @@ const BASE = '/calculadoras';
 export const CalculatorService = {
   tempoEspecial: (data: ITempoEspecialInput) =>
     api.post<ICalculatorResponse<TempoEspecialResult>>(`${BASE}/tempo-especial`, data),
+  
   revisaoVidaToda: (data: IRevisaoVidaTodaInput) =>
     api.post<ICalculatorResponse<RevisaoVidaTodaResult>>(`${BASE}/revisao-vida-toda`, data),
+  
   horasExtras: (data: IHorasExtrasInput) =>
     api.post<ICalculatorResponse<HorasExtrasResult>>(`${BASE}/horas-extras`, data),
+  
   correcaoMonetaria: (data: ICorrecaoMonetariaInput) =>
     api.post<ICalculatorResponse<CorrecaoMonetariaResult>>(`${BASE}/correcao-monetaria`, data),
+  
   verbasRescisorias: (data: IVerbasRescisoriasInput) =>
     api.post<ICalculatorResponse<VerbasRescisoriasResult>>(`${BASE}/verbas-rescisorias`, data),
+  
   adicionalNoturno: (data: IAdicionalNoturnoInput) =>
     api.post<ICalculatorResponse<AdicionalNoturnoResult>>(`${BASE}/adicional-noturno`, data),
+  
   pensaoAlimenticia: (data: IPensaoAlimenticiaInput) =>
     api.post<ICalculatorResponse<PensaoAlimenticiaResult>>(`${BASE}/pensao-alimenticia`, data),
+  
   liquidacaoSentenca: (data: ILiquidacaoSentencaInput) =>
     api.post<ICalculatorResponse<LiquidacaoSentencaResult>>(`${BASE}/liquidacao-sentenca`, data),
+  
   jurosMora: (data: IJurosMoraInput) =>
     api.post<ICalculatorResponse<JurosMoraResult>>(`${BASE}/juros-mora`, data),
+  
   valorCausa: (data: IValorCausaInput) =>
     api.post<ICalculatorResponse<ValorCausaResult>>(`${BASE}/valor-causa`, data),
+  
   periodoGraca: (data: IPeriodoGracaInput) =>
     api.post<ICalculatorResponse<PeriodoGracaResult>>(`${BASE}/periodo-graca`, data),
+  
   regraTransicaoEC103: (data: IRegraTransicaoInput) =>
     api.post<ICalculatorResponse<RegraTransicaoEC103Result>>(`${BASE}/regra-transicao-ec103`, data),
-  getInfo: () => api.get<ICalculatorResponse<GenericCalcResult>>('/calculadoras/info'),
-};
+  
+  getInfo: () => 
+    api.get<ICalculatorResponse<GenericCalcResult>>('/calculadoras/info'),
+} as const;
 
-// ADICIONE ISSO AQUI EMBAIXO (fora do objeto!)
+// Exports de tipos para facilitar importação
 export type {
   IHorasExtrasInput as HorasExtrasInput,
   HorasExtrasResult as HorasExtrasOutput,

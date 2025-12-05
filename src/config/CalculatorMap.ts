@@ -15,3 +15,5 @@ export const CalculatorMap = {
   'juros-mora': CalculatorService.jurosMora,
   'correcao-monetaria': CalculatorService.correcaoMonetaria,
 } as const;
+
+export type CalculatorType = keyof typeof CalculatorMap;
